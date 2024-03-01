@@ -1,6 +1,6 @@
-package com.api.GithubApi.integration;
+package com.api.githubapi.integration;
 
-import com.api.GithubApi.models.repository.Repository;
+import com.api.githubapi.models.repository.Repository;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

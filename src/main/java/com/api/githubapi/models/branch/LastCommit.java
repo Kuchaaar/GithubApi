@@ -1,4 +1,4 @@
-package com.api.GithubApi.models.branch;
+package com.api.githubapi.models.branch;
 
 public record LastCommit(String sha) {
 }

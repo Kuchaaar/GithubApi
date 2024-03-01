@@ -1,6 +1,6 @@
-package com.api.GithubApi.models.response;
+package com.api.githubapi.models.response;
 
-import com.api.GithubApi.models.branch.Branch;
+import com.api.githubapi.models.branch.Branch;
 
 import java.util.List;
 

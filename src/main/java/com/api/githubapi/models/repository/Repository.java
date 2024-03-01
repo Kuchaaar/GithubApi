@@ -1,4 +1,4 @@
-package com.api.GithubApi.models.repository;
+package com.api.githubapi.models.repository;
 
 public record Repository(String name, Owner owner, boolean fork){
 

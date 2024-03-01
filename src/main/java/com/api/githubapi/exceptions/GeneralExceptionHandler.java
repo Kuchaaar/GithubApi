@@ -1,4 +1,4 @@
-package com.api.GithubApi.exceptions;
+package com.api.githubapi.exceptions;
 
 import feign.FeignException;
 import org.springframework.http.HttpHeaders;
