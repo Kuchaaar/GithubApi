@@ -9,7 +9,6 @@ import com.api.githubapi.models.response.ApiResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class RepositoryService{
@@ -23,13 +22,13 @@ public class RepositoryService{
 
     public List<ApiResponse> getAllRepositoriesAndBranches(String username){
         return repositoryClient.getAllRepositories(username)
-                .stream()
+                .parallelStream()
                 .filter(repo -> ! repo.fork())
                 .map(repository -> {
                     List<Branch> branches = getAllBranchesForRepository(repository, username);
                     return mockToApiResponse(repository, repository.owner(), branches);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<Branch> getAllBranchesForRepository(Repository repository, String username){
