@@ -1,5 +1,6 @@
 package com.api.githubapi.integration;
 
+import com.api.githubapi.config.RepositoryClientConfiguration;
 import com.api.githubapi.models.branch.Branch;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name = "branch")
+@FeignClient(name = "branch",configuration = RepositoryClientConfiguration.class)
 public interface BranchClient{
     @GetMapping(value = "{username}/{repositoryName}/branches")
     List<Branch> getAllBranches(@PathVariable("username") String username,
                                 @PathVariable("repositoryName") String repositoryName,
-                                @RequestHeader("Authorization") String header);
+                                @RequestHeader("Authorization") String authorizationToken);
 }

@@ -23,10 +23,13 @@ public class RepositoriesFacade{
     }
 
     public List<Branch> getAllBranchesForRepository(String username, String repositoryName){
-        return branchClient.getAllBranches(username, repositoryName, "Bearer " + githubApiConfig.token());
+        return branchClient.getAllBranches(username, repositoryName, getBearerToken());
     }
 
     public List<Repository> getAllRepositoriesForUsername(String username){
-        return repositoryClient.getAllRepositories(username, "Bearer " + githubApiConfig.token());
+        return repositoryClient.getAllRepositories(username, getBearerToken());
+    }
+    private String getBearerToken(){
+        return "Bearer " + githubApiConfig.token();
     }
 }

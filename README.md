@@ -20,15 +20,11 @@ For example:
     "branches": [
       {
         "name": "example-branch1",
-        "commit": {
-          "sha": "abc123"
-        }
+        "lastCommitSha": "abc123"
       },
       {
         "name": "example-branch2",
-        "commit": {
-          "sha": "123abc"
-        }
+        "lastCommitSha": "123abc"
       }
     ]
   },
@@ -38,9 +34,7 @@ For example:
     "branches": [
       {
         "name": "example-name",
-        "commit": {
-          "sha": "abc123"
-        }
+        "lastCommitSha": "abc123"
       }
     ]
   }
