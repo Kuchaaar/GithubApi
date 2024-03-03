@@ -4,5 +4,5 @@ import com.api.githubapi.models.branch.Branch;
 
 import java.util.List;
 
-public record ApiResponse(String name, String login, List<Branch> branches){
+public record UserRepositoriesResponse(String name, String login, List<Branch> branches){
 }

@@ -1,41 +1,38 @@
 package com.api.githubapi.domain;
 
-import com.api.githubapi.integration.BranchClient;
-import com.api.githubapi.integration.RepositoryClient;
+import com.api.githubapi.facade.RepositoriesFacade;
 import com.api.githubapi.models.branch.Branch;
 import com.api.githubapi.models.repository.Owner;
 import com.api.githubapi.models.repository.Repository;
-import com.api.githubapi.models.response.ApiResponse;
-import org.springframework.stereotype.Component;
+import com.api.githubapi.models.response.UserRepositoriesResponse;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class RepositoryService{
-    private final RepositoryClient repositoryClient;
-    private final BranchClient branchClient;
+    private final RepositoriesFacade repositoriesFacade;
 
-    public RepositoryService(RepositoryClient repositoryClient, BranchClient branchClient){
-        this.repositoryClient = repositoryClient;
-        this.branchClient = branchClient;
+    public RepositoryService(RepositoriesFacade repositoriesFacade){
+        this.repositoriesFacade = repositoriesFacade;
     }
 
-    public List<ApiResponse> getAllRepositoriesAndBranches(String username){
-        return repositoryClient.getAllRepositories(username)
+    public List<UserRepositoriesResponse> getAllRepositoriesAndBranchesForUser(String username){
+        return repositoriesFacade.getAllRepositoriesForUsername(username)
                 .parallelStream()
                 .filter(repo -> ! repo.fork())
                 .map(repository -> {
                     List<Branch> branches = getAllBranchesForRepository(repository, username);
-                    return mockToApiResponse(repository, repository.owner(), branches);
+                    return mockToUserRepositoriesResponse(repository, repository.owner(), branches);
                 })
                 .toList();
     }
 
     private List<Branch> getAllBranchesForRepository(Repository repository, String username){
-        return branchClient.getAllBranches(username, repository.name());
+        return repositoriesFacade.getAllBranchesForRepository(username, repository.name());
     }
 
-    private ApiResponse mockToApiResponse(Repository repository, Owner owner, List<Branch> branch){
-        return new ApiResponse(repository.name(), owner.login(), branch);
+    private UserRepositoriesResponse mockToUserRepositoriesResponse(Repository repository, Owner owner, List<Branch> branch){
+        return new UserRepositoriesResponse(repository.name(), owner.login(), branch);
     }
 }

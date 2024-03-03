@@ -1,7 +1,7 @@
 package com.api.githubapi.web;
 
 import com.api.githubapi.domain.RepositoryService;
-import com.api.githubapi.models.response.ApiResponse;
+import com.api.githubapi.models.response.UserRepositoriesResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +16,7 @@ public class RepositoriesController{
         this.repositoryService = repositoryService;
     }
     @GetMapping("/repositories")
-    public List<ApiResponse> getAllRepositoriesAndBranches(@RequestParam String username){
-        return repositoryService.getAllRepositoriesAndBranches(username);
+    public List<UserRepositoriesResponse> getAllRepositoriesAndBranches(@RequestParam String username){
+        return repositoryService.getAllRepositoriesAndBranchesForUser(username);
     }
 }
