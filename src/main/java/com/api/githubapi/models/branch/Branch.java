@@ -1,4 +1,4 @@
 package com.api.githubapi.models.branch;
 
-public record Branch(String name, LastCommit commit){
+public record Branch(String name, Commit commit){
 }

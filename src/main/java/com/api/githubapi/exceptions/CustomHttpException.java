@@ -1,13 +1,12 @@
 package com.api.githubapi.exceptions;
 
 public class CustomHttpException extends RuntimeException {
-    private final int httpStatus;
-    public CustomHttpException(String message, int httpStatus) {
+    private final int status;
+    public CustomHttpException(String message, int status){
         super(message);
-        this.httpStatus = httpStatus;
+        this.status = status;
     }
-
-    public int getHttpStatus() {
-        return httpStatus;
+    public int getHttpStatus(){
+        return status;
     }
 }

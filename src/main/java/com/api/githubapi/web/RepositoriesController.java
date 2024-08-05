@@ -5,8 +5,7 @@ import com.api.githubapi.models.response.UserRepositoriesResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @RestController
 public class RepositoriesController{
@@ -15,8 +14,9 @@ public class RepositoriesController{
     public RepositoriesController(RepositoryService repositoryService){
         this.repositoryService = repositoryService;
     }
+
     @GetMapping("/repositories")
-    public List<UserRepositoriesResponse> getAllRepositoriesAndBranches(@RequestParam String username){
-        return repositoryService.getAllRepositoriesAndBranchesForUser(username);
+    public Flux<UserRepositoriesResponse> getAllRepositoriesAndBranches(@RequestParam String username){
+        return repositoryService.getAllRepositoriesWithBranches(username);
     }
 }
