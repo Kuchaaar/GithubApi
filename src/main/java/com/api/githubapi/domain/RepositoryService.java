@@ -2,35 +2,38 @@ package com.api.githubapi.domain;
 
 import com.api.githubapi.config.GithubApiConfig;
 import com.api.githubapi.exceptions.CustomHttpException;
-import com.api.githubapi.models.branch.Branch;
-import com.api.githubapi.models.repository.Repository;
+import com.api.githubapi.integration.BranchClient;
+import com.api.githubapi.integration.RepositoryClient;
 import com.api.githubapi.models.response.BranchResponse;
 import com.api.githubapi.models.response.UserRepositoriesResponse;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 public class RepositoryService{
-    private final WebClient webClient;
     private final GithubApiConfig githubApiConfig;
+    private final BranchClient branchClient;
+    private final RepositoryClient repositoryClient;
 
-    public RepositoryService(WebClient webClient, GithubApiConfig githubApiConfig){
-        this.webClient = webClient;
+    public RepositoryService(GithubApiConfig githubApiConfig,
+                             BranchClient branchClient,
+                             RepositoryClient repositoryClient){
         this.githubApiConfig = githubApiConfig;
+        this.branchClient = branchClient;
+        this.repositoryClient = repositoryClient;
     }
 
 
     public Flux<UserRepositoriesResponse> getAllRepositoriesWithBranches(String username){
-        return webClient.get()
-                .uri("/users/{username}/repos", username)
-                .header("Authorization", "Bearer " + githubApiConfig.token())
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response ->
-                        Mono.error(new CustomHttpException("User not found", 404)))
-                .bodyToFlux(Repository.class)
+        return repositoryClient.getAllRepositories(username, githubApiConfig.token())
+                .onErrorResume(e -> {
+                    if(e instanceof WebClientResponseException webClientResponseException &&
+                            ((WebClientResponseException) e).getStatusCode().is4xxClientError()){
+                        return Flux.error(new CustomHttpException("User not found", 404));
+                    }
+                    return Flux.error(e);
+                })
                 .filter(repository -> ! repository.fork())
                 .flatMap(repository ->
                         getBranchesForRepository(username, repository.name())
@@ -42,11 +45,7 @@ public class RepositoryService{
     }
 
     private Flux<BranchResponse> getBranchesForRepository(String username, String repositoryName){
-        return webClient.get()
-                .uri("/repos/{username}/{repositoryName}/branches", username, repositoryName)
-                .header("Authorization", "Bearer " + githubApiConfig.token())
-                .retrieve()
-                .bodyToFlux(Branch.class)
+        return branchClient.getAllBranches(username, repositoryName, githubApiConfig.token())
                 .map(branch -> new BranchResponse(branch.name(), branch.commit().sha()));
     }
 }
